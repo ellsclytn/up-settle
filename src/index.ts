@@ -2,7 +2,7 @@ import { APIGatewayProxyHandler } from 'aws-lambda'
 import { decodeBase64 } from './decodeBase64'
 import { TransactionHook } from './types/up/webhook/transaction'
 import { isValidTransaction } from './up/validateTransaction'
-import { verifySecret } from './verifySecret'
+import { verifySecret } from './up/verifySecret'
 
 interface Response {
   statusCode: number
