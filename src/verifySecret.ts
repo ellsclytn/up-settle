@@ -1,4 +1,5 @@
 import * as crypto from 'crypto'
+import timingSafeCompare from 'tsscmp'
 
 const { WEBHOOK_KEY: key } = process.env
 
@@ -13,5 +14,5 @@ export const verifySecret = (secret: string, body: string): boolean => {
     .update(body)
     .digest('hex')
 
-  return expectedSecret === secret
+  return timingSafeCompare(expectedSecret, secret)
 }
