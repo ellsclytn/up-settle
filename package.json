@@ -20,5 +20,8 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.0",
     "typescript": "^4.3.5"
+  },
+  "devDependencies": {
+    "serverless-offline": "^7.0.0"
   }
 }

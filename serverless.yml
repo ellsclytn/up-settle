@@ -3,6 +3,9 @@ service: up-settle
 
 frameworkVersion: '2'
 
+plugins:
+  - serverless-offline
+
 provider:
   name: aws
   runtime: nodejs12.x
