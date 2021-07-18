@@ -13,7 +13,7 @@ provider:
 
 functions:
   transaction:
-    handler: index.handleTransaction
+    handler: dist/index.handleTransaction
     events:
       - http:
           path: /
