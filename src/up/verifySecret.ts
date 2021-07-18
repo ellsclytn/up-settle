@@ -1,11 +1,8 @@
+import env from 'env-var'
 import * as crypto from 'crypto'
 import timingSafeCompare from 'tsscmp'
 
-const { WEBHOOK_KEY: key } = process.env
-
-if (typeof key !== 'string') {
-  throw new Error('Environment variables missing')
-}
+const key = env.get('WEBHOOK_KEY').required().asString()
 
 /** Verify a given secret against the expected secret for the webhook */
 export const verifySecret = (secret: string, body: string): boolean => {

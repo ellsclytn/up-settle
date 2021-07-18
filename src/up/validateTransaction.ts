@@ -1,15 +1,12 @@
 import axios from 'axios'
+import env from 'env-var'
 import { Transaction } from '../types/up/transaction'
 
 interface TransactionResponse {
   data: Transaction
 }
 
-const { API_TOKEN: apiToken } = process.env
-
-if (typeof apiToken !== 'string') {
-  throw new Error('Environment variables missing')
-}
+const apiToken = env.get('API_TOKEN').required().asString()
 
 const upClient = axios.create({
   baseURL: 'https://api.up.com.au/api/v1/',
@@ -19,8 +16,7 @@ const upClient = axios.create({
 })
 
 async function getTransaction (url: string): Promise<Transaction> {
-  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-  if (process.env.FAKE_IT) {
+  if (env.get('FAKE_IT').default(0).asBool()) {
     return require('../../test/fixtures/settled-applicable-transaction.json')
   }
 
