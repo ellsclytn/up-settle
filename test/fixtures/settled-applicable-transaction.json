@@ -1,0 +1,65 @@
+{
+  "type": "transactions",
+  "id": "817f4740-dad8-419e-8fb9-dc0f545f6a9d",
+  "attributes": {
+    "status": "SETTLED",
+    "rawText": "SOMETHING VPN SOMETHING",
+    "description": "SOMETHING VPN SOMETHING",
+    "message": null,
+    "holdInfo": {
+      "amount": {
+        "currencyCode": "AUD",
+        "value": "-7.89",
+        "valueInBaseUnits": -789
+      },
+      "foreignAmount": {
+        "currencyCode": "EUR",
+        "value": "-5.00",
+        "valueInBaseUnits": -500
+      }
+    },
+    "roundUp": null,
+    "cashback": null,
+    "amount": {
+      "currencyCode": "AUD",
+      "value": "-7.89",
+      "valueInBaseUnits": -789
+    },
+    "foreignAmount": {
+      "currencyCode": "EUR",
+      "value": "-5.00",
+      "valueInBaseUnits": -500
+    },
+    "settledAt": "2021-07-11T05:03:19+10:00",
+    "createdAt": "2021-07-09T20:07:08+10:00"
+  },
+  "relationships": {
+    "account": {
+      "data": {
+        "type": "accounts",
+        "id": "755fe102-3ce1-4d6c-8876-6757c307c714"
+      },
+      "links": {
+        "related": "https://api.up.com.au/api/v1/accounts/755fe102-3ce1-4d6c-8876-6757c307c714"
+      }
+    },
+    "transferAccount": {
+      "data": null
+    },
+    "category": {
+      "data": null
+    },
+    "parentCategory": {
+      "data": null
+    },
+    "tags": {
+      "data": [],
+      "links": {
+        "self": "https://api.up.com.au/api/v1/transactions/817f4740-dad8-419e-8fb9-dc0f545f6a9d/relationships/tags"
+      }
+    }
+  },
+  "links": {
+    "self": "https://api.up.com.au/api/v1/transactions/817f4740-dad8-419e-8fb9-dc0f545f6a9d"
+  }
+}
