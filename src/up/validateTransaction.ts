@@ -28,9 +28,11 @@ async function getTransaction (url: string): Promise<Transaction> {
 }
 
 /** Given an Up Transaction URL, it will look up the transaction and return
- *  true if the Transaction is suitable for processing
+ *  the Transaction if suitable for processing, otherwise null
  */
-export async function isValidTransaction (url: string): Promise<boolean> {
+export async function getValidTransaction (
+  url: string
+): Promise<Transaction | null> {
   const transaction = await getTransaction(url)
 
   if (
@@ -38,8 +40,8 @@ export async function isValidTransaction (url: string): Promise<boolean> {
     transaction.attributes.foreignAmount?.currencyCode === 'EUR' &&
     transaction.attributes.foreignAmount?.value === '-5.00'
   ) {
-    return true
+    return transaction
   }
 
-  return false
+  return null
 }

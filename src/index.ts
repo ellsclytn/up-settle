@@ -1,7 +1,10 @@
+import env from 'env-var'
 import { APIGatewayProxyHandler } from 'aws-lambda'
 import { decodeBase64 } from './decodeBase64'
+import { SettleUpApi } from './settleUp/api'
+import { getUserAuth } from './settleUp/authentication'
 import { TransactionHook } from './types/up/webhook/transaction'
-import { isValidTransaction } from './up/validateTransaction'
+import { getValidTransaction } from './up/validateTransaction'
 import { verifySecret } from './up/verifySecret'
 
 interface Response {
@@ -39,9 +42,19 @@ export const handleTransaction: APIGatewayProxyHandler = async (
     return respond({ message: 'Transaction not settled, ignoring.' })
   }
 
-  if (await isValidTransaction(data.relationships.transaction.links.related)) {
-    // Do the stuff with Settle Up
-    console.log('Transaction suitable for Settle Up!')
+  const settleUpAuth = getUserAuth()
+  const transaction = await getValidTransaction(
+    data.relationships.transaction.links.related
+  )
+
+  if (transaction !== null) {
+    const settleUp = new SettleUpApi(await settleUpAuth)
+
+    await settleUp.addTransaction({
+      group: env.get('SETTLE_UP_GROUP').required().asString(),
+      user: env.get('SETTLE_UP_USER').required().asString(),
+      amount: transaction.attributes.amount.value
+    })
   }
 
   return respond({ status: 'OK' })
