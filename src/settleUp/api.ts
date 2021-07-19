@@ -12,6 +12,8 @@ export interface SettleUpTransactionRequest {
   amount: string
 }
 
+type GroupWithId = [id: string, group: GroupDetailsResponse]
+
 export class SettleUpApi {
   readonly client: AxiosInstance
   readonly uid: string
@@ -81,13 +83,19 @@ export class SettleUpApi {
   private async getGroupByName (name: string): Promise<string> {
     const groups = await this.getUserGroups()
 
-    const idFound = Object.keys(groups).find(async (id) => {
-      const group = await this.getGroupDetails(id)
-      return name === group.name
+    const groupWithId = await Promise.all(
+      Object.keys(groups).map(
+        async (id): Promise<GroupWithId> => {
+          return [id, await this.getGroupDetails(id)]
+        }
+      )
+    ).then((groups) => {
+      return groups.find(([_id, group]) => group.name === name)
     })
 
-    if (typeof idFound === 'string') {
-      return idFound
+    if (typeof groupWithId !== 'undefined') {
+      const [id] = groupWithId
+      return id
     }
 
     throw new Error(`Failed to find group matching ${name}`)
