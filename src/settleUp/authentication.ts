@@ -1,17 +1,14 @@
 import env from 'env-var'
 import firebase from 'firebase/app'
 import 'firebase/auth'
+import { FirebaseConfig } from '../types/settleUp/authentication'
 
-export const apiUrl = 'https://settle-up-sandbox.firebaseio.com'
+const firebaseConfig: FirebaseConfig = env
+  .get('SETTLE_UP_AUTH_CONFIG')
+  .required()
+  .asJsonObject() as FirebaseConfig
 
-const firebaseConfig = {
-  apiKey: 'AIzaSyCfMEZut1bOgu9d1NHrJiZ7ruRdzfKEHbk',
-  authDomain: 'settle-up-sandbox.firebaseapp.com',
-  databaseURL: apiUrl,
-  projectId: 'settle-up-sandbox',
-  storageBucket: 'settle-up-sandbox.appspot.com',
-  appId: '327675517252504'
-}
+export const apiUrl = firebaseConfig.databaseURL
 
 type Credentials = [username: string, password: string]
 
