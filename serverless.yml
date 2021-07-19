@@ -18,3 +18,11 @@ functions:
       - http:
           path: /
           method: post
+    environment:
+      API_TOKEN: ${env:API_TOKEN}
+      WEBHOOK_KEY: ${env:WEBHOOK_KEY}
+      SETTLE_UP_USERNAME: ${env:SETTLE_UP_USERNAME}
+      SETTLE_UP_PASSWORD: ${env:SETTLE_UP_PASSWORD}
+      SETTLE_UP_GROUP: ${env:SETTLE_UP_GROUP}
+      SETTLE_UP_USER: ${env:SETTLE_UP_USER}
+      SETTLE_UP_AUTH_CONFIG: ${env:SETTLE_UP_AUTH_CONFIG}
