@@ -1,6 +1,7 @@
 import axios from 'axios'
 import env from 'env-var'
 import { Transaction } from '../types/up/transaction'
+import { Expense } from '../types/settleUp/expense'
 
 interface TransactionResponse {
   data: Transaction
@@ -32,15 +33,26 @@ async function getTransaction (url: string): Promise<Transaction> {
  */
 export async function getValidTransaction (
   url: string
-): Promise<Transaction | null> {
+): Promise<Expense | null> {
   const transaction = await getTransaction(url)
+  const amount = transaction.attributes.amount.value.replace('-', '')
 
   if (
     transaction.attributes.rawText.includes('VPN') &&
     transaction.attributes.foreignAmount?.currencyCode === 'EUR' &&
     transaction.attributes.foreignAmount?.value === '-5.00'
   ) {
-    return transaction
+    return {
+      amount,
+      purpose: 'VPN'
+    }
+  }
+
+  if (transaction.attributes.rawText.toLowerCase().includes('launtel')) {
+    return {
+      amount,
+      purpose: 'Internet'
+    }
   }
 
   return null

@@ -53,7 +53,7 @@ export const handleTransaction: APIGatewayProxyHandler = async (
     await settleUp.addTransaction({
       group: env.get('SETTLE_UP_GROUP').required().asString(),
       user: env.get('SETTLE_UP_USER').required().asString(),
-      amount: transaction.attributes.amount.value
+      ...transaction
     })
   }
 

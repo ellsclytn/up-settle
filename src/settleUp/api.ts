@@ -10,6 +10,7 @@ export interface SettleUpTransactionRequest {
   group: string
   user: string
   amount: string
+  purpose: string
 }
 
 type GroupWithId = [id: string, group: GroupDetailsResponse]
@@ -33,7 +34,8 @@ export class SettleUpApi {
   async addTransaction ({
     group,
     user,
-    amount
+    amount,
+    purpose
   }: SettleUpTransactionRequest): Promise<void> {
     const groupId = await this.getGroupByName(group)
     const members = await this.getGroupMembers(groupId)
@@ -54,14 +56,14 @@ export class SettleUpApi {
       fixedExchangeRate: true,
       items: [
         {
-          amount: amount.replace('-', ''),
+          amount,
           forWhom: Object.entries(members).map(([id, { defaultWeight }]) => ({
             memberId: id,
             weight: defaultWeight
           }))
         }
       ],
-      purpose: 'VPN',
+      purpose: purpose,
       type: 'expense',
       whoPaid: [
         {
@@ -84,11 +86,9 @@ export class SettleUpApi {
     const groups = await this.getUserGroups()
 
     const groupWithId = await Promise.all(
-      Object.keys(groups).map(
-        async (id): Promise<GroupWithId> => {
-          return [id, await this.getGroupDetails(id)]
-        }
-      )
+      Object.keys(groups).map(async (id): Promise<GroupWithId> => {
+        return [id, await this.getGroupDetails(id)]
+      })
     ).then((groups) => {
       return groups.find(([_id, group]) => group.name === name)
     })
