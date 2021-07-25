@@ -10,7 +10,24 @@
 
 ## Usage
 
-The application uses Lambda & API Gateway. For the function to run, you'll need to configure the following environment variables in the Lambda config:
+You'll first want to define a set of Expenses for the application to reference. This is done by creating a `expenses.yml` at the root of the project. For example:
+
+```yaml
+---
+- expenseName: Internet
+  transaction:
+    reference: /My ISP REFERENCE/
+- expenseName: A cool foreign service
+  transaction:
+    reference: /cool reference/
+    foreignAmount:
+      currencyCode: EUR
+      value: '-10.00'
+```
+
+Every Expense must contain a `expenseName` (what it will be called in Settle Up) and a `transaction.reference` (the `rawText` on the Transaction to match against). For everything under `transaction`, Regex is supported through the standard `/stuff/` syntax. Other properties mentioned above are all optional, and if specified, act as additional criteria for a Transaction to match.
+
+The application uses Lambda & API Gateway. For the function to run, you'll need to configure the following environment variables in your environment (hint: [`.envrc`](https://direnv.net/) is gitignored) for use during deployment:
 
 - `SETTLE_UP_USERNAME`: Your Settle Up username
 - `SETTLE_UP_PASSWORD`: Your Settle Up password

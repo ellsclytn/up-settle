@@ -12,10 +12,15 @@
     "axios": "^0.21.1",
     "env-var": "^7.0.1",
     "firebase": "^8.7.1",
-    "tsscmp": "^1.0.6"
+    "js-yaml": "^3.14.1",
+    "regex-parser": "^2.2.11",
+    "tsscmp": "^1.0.6",
+    "validate": "^5.1.0"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.79",
+    "@types/js-yaml": "^4.0.2",
+    "@types/node": "^16.3.3",
     "@types/serverless": "^1.78.32",
     "@types/tsscmp": "^1.0.0",
     "@typescript-eslint/eslint-plugin": "^4.28.3",

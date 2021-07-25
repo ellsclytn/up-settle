@@ -4,7 +4,7 @@ import { decodeBase64 } from './decodeBase64'
 import { SettleUpApi } from './settleUp/api'
 import { getUserAuth } from './settleUp/authentication'
 import { TransactionHook } from './types/up/webhook/transaction'
-import { getValidTransaction } from './up/validateTransaction'
+import { findExpenseForTransaction } from './up/findExpenseForTransaction'
 import { verifySecret } from './up/verifySecret'
 
 interface Response {
@@ -43,7 +43,7 @@ export const handleTransaction: APIGatewayProxyHandler = async (
   }
 
   const settleUpAuth = getUserAuth()
-  const transaction = await getValidTransaction(
+  const transaction = await findExpenseForTransaction(
     data.relationships.transaction.links.related
   )
 
