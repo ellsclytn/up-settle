@@ -5,6 +5,12 @@ frameworkVersion: '2'
 
 plugins:
   - serverless-offline
+  - serverless-prune-plugin
+
+custom:
+  prune:
+    automatic: true
+    number: 1
 
 provider:
   name: aws
