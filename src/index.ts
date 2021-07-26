@@ -1,5 +1,5 @@
 import env from 'env-var'
-import { APIGatewayProxyHandler } from 'aws-lambda'
+import { APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'
 import { decodeBase64 } from './decodeBase64'
 import { SettleUpApi } from './settleUp/api'
 import { getUserAuth } from './settleUp/authentication'
@@ -7,22 +7,37 @@ import { TransactionHook } from './types/up/webhook/transaction'
 import { findExpenseForTransaction } from './up/findExpenseForTransaction'
 import { verifySecret } from './up/verifySecret'
 
-interface Response {
-  statusCode: number
-  body: string
+interface LoggedResponseOptions {
+  message: string
+  statusCode?: number
+  [key: string]: any
 }
 
-const respond = (payload: any, statusCode = 200): Response => ({
-  statusCode,
-  body: JSON.stringify(payload)
-})
+function respond ({
+  message,
+  statusCode = 200,
+  ...metadata
+}: LoggedResponseOptions): APIGatewayProxyResult {
+  const log = {
+    ...metadata,
+    message,
+    statusCode
+  }
+
+  console.log(log)
+
+  /* Avoid returning any extra detail to Up. A status code is enough info for
+   * their logs. Everything else can stay in our logs
+   */
+  return { statusCode, body: '' }
+}
 
 export const handleTransaction: APIGatewayProxyHandler = async (
   event,
   _context
 ) => {
   if (event.body === null) {
-    return respond({ status: 'Null payload, no action' })
+    return respond({ message: 'Null payload, no action' })
   }
 
   const rawBody = event.isBase64Encoded ? decodeBase64(event.body) : event.body
@@ -38,13 +53,23 @@ export const handleTransaction: APIGatewayProxyHandler = async (
       : event.headers[authSignatureKey.toLowerCase()]
 
   if (authSignature === undefined || !verifySecret(authSignature, rawBody)) {
-    return respond({ status: 'Unauthorized' }, 403)
+    return respond({ message: 'Failed signature verification' })
   }
 
   const { data }: TransactionHook = JSON.parse(rawBody)
 
+  if (data.relationships.transaction === undefined) {
+    return respond({
+      message: 'No Transaction data present, ignoring.',
+      webhookId: data.id
+    })
+  }
+
   if (data.attributes.eventType !== 'TRANSACTION_SETTLED') {
-    return respond({ message: 'Transaction not settled, ignoring.' })
+    return respond({
+      message: 'Transaction not settled, ignoring.',
+      transactionId: data.relationships.transaction.data.id
+    })
   }
 
   const settleUpAuth = getUserAuth()
@@ -62,5 +87,5 @@ export const handleTransaction: APIGatewayProxyHandler = async (
     })
   }
 
-  return respond({ status: 'OK' })
+  return respond({ message: 'OK' })
 }

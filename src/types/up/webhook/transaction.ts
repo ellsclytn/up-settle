@@ -21,7 +21,7 @@ export interface TransactionHook {
           related: string
         }
       }
-      transaction: {
+      transaction?: {
         data: {
           id: string
           type: string
