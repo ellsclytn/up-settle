@@ -27,12 +27,17 @@ export const handleTransaction: APIGatewayProxyHandler = async (
 
   const rawBody = event.isBase64Encoded ? decodeBase64(event.body) : event.body
 
-  if (
-    !verifySecret(
-      event.headers['X-Up-Authenticity-Signature'] as string,
-      rawBody
-    )
-  ) {
+  const authSignatureKey = 'X-Up-Authenticity-Signature'
+
+  /* When I run it through my HTTP client it seems to lowercase the headers no
+   * matter what. Therefore, this annoying thing.
+   */
+  const authSignature =
+    event.headers[authSignatureKey] !== undefined
+      ? event.headers[authSignatureKey]
+      : event.headers[authSignatureKey.toLowerCase()]
+
+  if (authSignature === undefined || !verifySecret(authSignature, rawBody)) {
     return respond({ status: 'Unauthorized' }, 403)
   }
 
